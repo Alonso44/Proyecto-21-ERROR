@@ -7,8 +7,7 @@ var score;
 var backgroundImg,background;
 var diver, diverImg;
 
-var fishGroup1, fishGroup2, fishGroup3, fishGroup4, fishGroup5;
-var fishGroup,coinGroup, fish1, fish2, fish3, fish4, monster1, monster2, coin1;
+var fishGroup,coinGroup,monsterGroup, fish1, fish2, fish3, fish4, monster1, monster2, coin1;
 var reset, resetImg, gameover, gameoverImg;
 
 function preload(){
@@ -52,12 +51,8 @@ function setup() {
 
 
     fishGroup = createGroup();
-    fishGroup1 = createGroup();
-    fishGroup2 = createGroup();
-    fishGroup3 = createGroup();
-    fishGroup4 = createGroup();
-    fishGroup5 = createGroup();
     coinGroup = createGroup();
+    monsterGroup = createGroup();
 
     score = 0
 }
@@ -78,26 +73,14 @@ function draw() {
      diver.y = World.mouseY;
 
      spawnFish();
-     spawnFish1();
-     spawnFish2();
-     spawnFish3();
-     spawnFish4();
-     spawnFish5();
      spawnCoin();
-     restart();
-     drawSprites();
+     SpawnMonster();
 
-        if(fishGroup4.isTouching(diver)){
-            gameState = END;
-        }
-        if(fishGroup5.isTouching(diver)){
-            gameState = END;
-        }
-        if(coinGroup.isTouching(diver)){
-            score = score + 10;
-        }
-
+     if(monsterGroup.isTouching(diver)){
+        gameState = END;
+     }
     }
+
     else if(gameState === END){
         gameover.visible = true;
         reset.visible = true;
@@ -105,123 +88,100 @@ function draw() {
         background.velocityX = 0;
         diver.x = 0;
 
-        fishGroup = setLifetimeEach(-1);
-        fishGroup1 = setLifetimeEach(-1);
-        fishGroup2 = setLifetimeEach(-1);
-        fishGroup3 = setLifetimeEach(-1);
-        fishGroup4 = setLifetimeEach(-1);
-        fishGroup5 = setLifetimeEach(-1);
-        coinGroup = setLifetimeEach(-1);
+        fishGroup.setLifetimeEach(-1);
+        coinGroup.setLifetimeEach(-1);
+        monsterGroup.setLifetimeEach(-1);
 
-        fishGroup = setVelocityXEach(0);
-        fishGroup1 = setVelocityXEach(0);
-        fishGroup2 = setVelocityXEach(0);
-        fishGroup3 = setVelocityXEach(0);
-        fishGroup4 = setVelocityXEach(0);
-        fishGroup5 = setVelocityXEach(0);
-        coinGroup = setVelocityXEach(0);
+        fishGroup.setVelocityXEach(0);
+        coinGroup.setVelocityXEach(0);
+        monsterMonster.setVelocityXEach(0);
 
-      }
-
-      if(mousePressedOver(reset)){
+        if(mousePressedOver(reset)){
             restart();
+        }
+
       }
+
+
+      drawSprites();
 }
 
+
+function spawnFish(){
+    if (frameCount % 60 === 0){
+        var fish = createSprite(600,Math.round(random(2000,100)),40,10);
+        fish.y = Math.round(random(2000,100));
+        fish.velocityX = -3;
+
+        var rand = Math.round(random(1,4));
+        switch(rand){
+            case 1: obstacle.addImage(fish1);
+                break;
+            case 2: obstacle.addImage(fish2);
+                break;
+            case 3: obstacle.addImage(fish3);
+                break;
+             case 4: obstacle.addImage(fish4);
+                break;
+             default: break;
+        }
+        fish.scale = 0.2;
+        fish.lifetime = 500;
+        fish.depth = diver.depth;
+        fish.depth =diver.depth+1;
+
+        fishGroup.add(fish);
+    }
+}
+
+function SpawnMonster(){
+    if (frameCount % 60 === 0){
+        var monster = createSprite(600,Math.round(random(2000,100)),40,10);
+        monster.y = Math.round(random(2000,100));
+        monster.velocityX = -3;
+
+        var rand = Math.round(random(1,2));
+        switch(rand){
+            case 1: obstacle.addImage(monster1);
+                break;
+            case 2: obstacle.addImage(monster2);
+                break;
+             default: break;
+        }
+        monster.scale = 0.2;
+        monster.lifetime = 500;
+        monster.depth = diver.depth;
+        monster.depth =diver.depth+1;
+
+        monsterGroup.add(monster);
+    }
+}
+
+function spawnCoin(){
+    if (frameCount % 60 === 0){
+        var coin = createSprite(600,Math.round(random(2000,100)),40,10);
+        coin.addImage(coin1);
+        coin.scale = 0.5;
+        coin.velocityX = -3;
+        coin.lifetime = 500;
+
+        coin.depth = diver.depth;
+        diver.depth = diver.depth+1;
+
+        coinGroup.add(coin);
+    }
+}
+
+
 function restart(){
-    gameState = PLAY
-    fishGroup = destroyEach();
-    fishGroup1 = destroyEach();
-    fishGroup2 = destroyEach();
-    fishGroup3 = destroyEach();
-    fishGroup4 = destroyEach();
-    fishGroup5 = destroyEach();
-    coinGroup = destroyEach();
+    gameState = PLAY 
+    gameover.visible = false;
+    reset.visible = false;
+
+    fishGroup.destroyEach();
+    coinGroup.destroyEach();
+    monsterGroup.destroyEach();
 
     score = 0;
 
 }
-
-function spawnFish(){
-    if(frameCount % 190 === 0){
-        var fishA = createSprite (2000,(Math.round(random(5,980),10,140)));
-        fishA.addImage(fish1);
-        fishA.velocityX = -6
-        fishA.scale = 0.1;
-        fishA.lifetime = 400;
-        fishGroup.add(fishA);
-    
-        }
- }
-
- function spawnFish1(){
-    if(frameCount % 220 === 0){
-        var fishB = createSprite (2000,(Math.round(random(5,980),10,140)));
-        fishB.addImage(fish2);
-        fishB.velocityX = -6
-        fishB.scale = 0.12;
-        fishB.lifetime = 400;
-        fishGroup1.add(fishB);
-    
-        }
- }
-
- function spawnFish2(){
-    if(frameCount % 160 === 0){
-        var fishC = createSprite (2000,(Math.round(random(5,980),10,140)));
-        fishC.addImage(fish3);
-        fishC.velocityX = -6
-        fishC.scale = 0.1;
-        fishC.lifetime = 400;
-        fishGroup2.add(fishC);
-    
-        }
- }
-
- function spawnFish3(){
-    if(frameCount % 250 === 0){
-        var fishD = createSprite (2000,(Math.round(random(5,980),10,140)));
-        fishD.addImage(fish4);
-        fishD.velocityX = -6
-        fishD.scale = 0.1;
-        fishD.lifetime = 400;
-        fishGroup3.add(fishD);
-    
-        }
- }
-
- function spawnFish4(){
-    if(frameCount % 350 === 0){
-        var fishE = createSprite (2000,(Math.round(random(8,980),10,140)));
-        fishE.addImage(monster1);
-        fishE.velocityX = -6
-        fishE.scale = 1;
-        fishE.lifetime = 400;
-        fishGroup4.add(fishE);
-    
-        }
- }
-
- function spawnFish5(){
-    if(frameCount % 400 === 0){
-        var fishF = createSprite (2000,(Math.round(random(5,980),10,140)));
-        fishF.addImage(monster2);
-        fishF.velocityX = -6
-        fishF.scale = 0.4;
-        fishF.lifetime = 400;
-        fishGroup5.add(fishF);
-    
-        }
- }
-
- function spawnCoin(){
-    if(frameCount % 150 === 0){
-        var Coin = createSprite (2000,(Math.round(random(5,980),10,140)));
-        Coin.addImage(coin1);
-        Coin.velocityX = -6
-        Coin.scale = 0.1;
-        Coin.lifetime = 400;
-        coinGroup.add(Coin);
-    
-        }
- }
